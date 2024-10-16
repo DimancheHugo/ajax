@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>json Employes avec Fetch</title>
+</head>
+<body>
+
+<h1>JRostand Reperes Stade avec Fetch</h1>
+<hr>
+<div id="map"></div>
+
+<style type="text/css">
+    /* Toujours définir explicitement la hauteur de la carte */
+    #map {
+        height: 100%;
+    }
+
+    /* Optionnel : Remplir la fenêtre avec la page */
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<!-- API Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Y32T_PJHZxYcK3BJYJFNwSl6cuvLXpo&callback=initMap" async defer></script>
+
+<script>
+    // Au chargement de la page, déclencher la fonction fetchMarkers
+    window.onload = initMap();
+    // Fonction pour initialiser et afficher la carte Google Maps
+    function initMap() {
+        const ecole = {lat:49.062423410152334,lng: 2.6876105098622673 };
+        const mcdo = {lat:49.039861268193945,lng: 2.6862837675331055};
+        const map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 12,
+          center: { lat: 49.05262738387176, lng:2.6840968820963296 },
+          mapTypeId: "terrain",
+        });
+        const contentString =
+    '<div id="content">' +
+    '<div id="siteNotice">' +
+    "</div>" +
+    '<h1 id="firstHeading" class="firstHeading">École Primaire Publique Henri Dunant</h1>' +
+    '<div id="bodyContent">' +
+    "<p><b>École Primaire Publique Henri Dunant</b> est une école située à " +
+    "Rte d'Eve, 77230 Dammartin-en-Goële. Cet établissement est dédié à l'enseignement primaire " +
+    "pour les enfants de la région. Elle offre un cadre d'apprentissage chaleureux avec des enseignants " +
+    "engagés et un environnement propice au développement éducatif des élèves.</p>" +
+    "<p>À proximité, les enfants peuvent profiter d'espaces verts et d'aires de jeux, faisant de cet endroit " +
+    "un lieu d'apprentissage et de loisirs pour les jeunes.</p>" +
+    '<p>Adresse : <b>Rte d\'Eve, 77230 Dammartin-en-Goële, France</b></p>' +
+    '<p>Pour plus d\'informations, consultez <a href="https://www.dammartin-en-goele.fr/">' +
+    "le site officiel de Dammartin-en-Goële</a>.</p>" +
+    "</div>" +
+    "</div>";
+    const contentStringMcdo =
+    '<div id="content">' +
+    '<div id="siteNotice">' +
+    "</div>" +
+    '<h1 id="firstHeading" class="firstHeading">McDonald\'s Saint-Mard</h1>' +
+    '<div id="bodyContent">' +
+    "<p><b>McDonald's Saint-Mard</b> est un restaurant de la célèbre chaîne de fast-food situé à " +
+    "Saint-Mard, à proximité de Dammartin-en-Goële. Ce McDonald's propose une large gamme de repas rapides " +
+    "comme des burgers, frites, boissons, desserts et plus encore, adaptés à tous les âges.</p>" +
+    "<p>Le McDonald's de Saint-Mard est un lieu de restauration prisé par les familles, les jeunes et les travailleurs " +
+    "en déplacement dans la région. Avec son service au volant (drive) et son espace de restauration sur place, c'est un endroit pratique pour une pause gourmande.</p>" +
+    '<p>Adresse : <b>Rue de la Libération, 77230 Saint-Mard, France</b></p>' +
+    '<p>Pour plus d\'informations, consultez <a href="https://www.mcdonalds.fr/">' +
+    "le site officiel de McDonald's France</a>.</p>" +
+    "</div>" +
+    "</div>";
+
+         // Création d'une InfoWindow pour afficher des informations
+         const infowindowecole = new google.maps.InfoWindow({
+            content: contentString,
+            ariaLabel: "ecole",
+          });
+          const infowindowmcdo = new google.maps.InfoWindow({
+            content: contentStringMcdo,
+            ariaLabel: "mcdo",
+          });
+         // Création des marqueurs sur la carte
+         const markerecole = new google.maps.Marker({
+            position: ecole,
+            map,
+            title: "ecole",
+          });
+          const markermcdo = new google.maps.Marker({
+            position: mcdo,
+            map,
+            title: "mcdo",
+          });
+ 
+             // Ajout d'un événement "click" pour chaque marqueur
+             markerecole.addListener("click", () => {
+                 // Affiche une InfoWindow lorsqu'on clique sur le marqueur
+                 infowindowecole.open(map, markerecole);
+             });
+             markermcdo.addListener("click", () => {
+                // Affiche une InfoWindow lorsqu'on clique sur le marqueur
+                infowindowmcdo.open(map, markermcdo);
+            });
+
+        }
+
+</script>
+
+</body>
+</html>

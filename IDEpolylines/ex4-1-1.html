@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>json Employes avec Fetch</title>
+</head>
+<body>
+
+<h1>JRostand Reperes Stade avec Fetch</h1>
+<hr>
+<div id="map"></div>
+
+<style type="text/css">
+    /* Toujours définir explicitement la hauteur de la carte */
+    #map {
+        height: 100%;
+    }
+
+    /* Optionnel : Remplir la fenêtre avec la page */
+    html,
+    body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+</style>
+
+<!-- API Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA7Y32T_PJHZxYcK3BJYJFNwSl6cuvLXpo&callback=initMap" async defer></script>
+
+<script>
+ // Tableau pour stocker les positions
+ let tab = [];
+    
+
+ // Au chargement de la page, déclencher la fonction fetchMarkers
+ window.onload = fetchMarkers;
+
+ // Utilisation de Fetch pour charger les données JSON
+ function fetchMarkers() {
+     fetch("Markerville.json")
+     .then(response => {
+         // Vérifie si la requête a réussi
+         if (!response.ok) {
+             throw new Error("Erreur lors du chargement du fichier JSON");
+         }
+         // Convertit la réponse en JSON
+         return response.json();
+     })
+     .then(markers => {
+         // Itération sur les marqueurs reçus
+         for (let i = 0; i < markers.length; i++) {
+             let marker = markers[i];
+             let lat = null;
+             let lng = null;
+             let content = null
+
+             // Boucle for...in pour chaque marqueur
+             for (let key in marker) {
+                 if (key === "lat") {
+                     lat = marker[key];
+                 }
+                 if (key === "lng") {
+                     lng = marker[key];
+                 }
+                 if (key === "content") {
+                    content = marker[key];
+                }
+                 console.log(key + " : " + marker[key]);
+             }
+
+             // Si lat et lng existent, les ajouter au tableau tab
+             if (lat !== null && lng !== null && content !==null) {
+                 tab[i] = { lat: lat, lng: lng,content:content };
+             }
+         }
+         console.log(tab);
+         // Appelle initMap après avoir chargé les données
+         initMap();
+     })
+     .catch(error => {
+         // Gestion des erreurs
+         console.error("Erreur lors de la requête Fetch:", error);
+     });
+ }
+    // Fonction pour initialiser et afficher la carte Google Maps
+function initMap() {
+    const map = new google.maps.Map(document.getElementById("map"), {
+        zoom: 12,
+        center: { lat: 49.05262738387176, lng: 2.6840968820963296 },
+        mapTypeId: "terrain",
+    });
+
+    // Création d'une InfoWindow pour afficher des informations
+    const infowindow = new google.maps.InfoWindow();
+
+    // Création des marqueurs sur la carte
+    for (let i = 0; i < tab.length; i++) {
+        const position = tab[i];
+        const marker = new google.maps.Marker({
+            position: position,
+            map: map,
+            title: tab[i].content, // Nom du marqueur
+        });
+
+        // Ajout d'un événement "click" pour chaque marqueur
+        marker.addListener("click", () => {
+            // Affiche une InfoWindow lorsqu'on clique sur le marqueur
+            infowindow.setContent(`<div><strong>${tab[i].content}</strong></div>`);
+            infowindow.open(map, marker);
+        });
+    }
+}
+
+
+</script>
+
+</body>
+</html>
